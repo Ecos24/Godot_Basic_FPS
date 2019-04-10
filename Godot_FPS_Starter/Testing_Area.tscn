@@ -1,7 +1,10 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=23 format=2]
 
 [ext_resource path="res://Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scripts/RigidBody_hit_test.gd" type="Script" id=2]
+[ext_resource path="res://Health_Pickup.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Ammo_Pickup.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Target.tscn" type="PackedScene" id=5]
 
 [sub_resource type="PlaneMesh" id=1]
 size = Vector2( 80, 80 )
@@ -87,6 +90,7 @@ editor/display_folded = true
 
 [node name="Floor_plane" type="MeshInstance" parent="Box"]
 editor/display_folded = true
+transform = Transform( 2, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0 )
 mesh = SubResource( 1 )
 material/0 = SubResource( 2 )
 
@@ -97,7 +101,7 @@ shape = SubResource( 3 )
 
 [node name="Celing_plane" type="MeshInstance" parent="Box"]
 editor/display_folded = true
-transform = Transform( 1, 0, 0, 0, -1, 3.25841e-007, 0, -3.25841e-007, -1, 0, 75.2188, 0 )
+transform = Transform( 2, 0, 0, 0, -1, 7.78829e-007, 0, -3.89414e-007, -2, 0, 75.2188, 0 )
 cast_shadow = 2
 mesh = SubResource( 1 )
 material/0 = SubResource( 2 )
@@ -109,7 +113,7 @@ shape = SubResource( 3 )
 
 [node name="Wall_1" type="MeshInstance" parent="Box"]
 editor/display_folded = true
-transform = Transform( 1, 0, 0, 0, -1.62921e-007, 1, 0, -1, -1.62921e-007, -0.640566, 37.0752, 39.6568 )
+transform = Transform( 2, 0, 0, 0, -4.37114e-008, 1, 0, -1, -4.37114e-008, -0.640566, 37.0752, 78.816 )
 cast_shadow = 2
 mesh = SubResource( 1 )
 material/0 = SubResource( 2 )
@@ -121,7 +125,7 @@ shape = SubResource( 3 )
 
 [node name="Wall_2" type="MeshInstance" parent="Box"]
 editor/display_folded = true
-transform = Transform( -1.62921e-007, -1, 0.000345306, 0, 0.000345306, 1, -1, 1.62921e-007, -5.62574e-011, 38.2511, 37.0752, 0.0846462 )
+transform = Transform( -3.25841e-007, -1, -4.37114e-008, 0, -4.37114e-008, 1, -2, 1.62921e-007, 7.12149e-015, 77.0796, 37.0752, 0.0846462 )
 cast_shadow = 2
 mesh = SubResource( 1 )
 material/0 = SubResource( 2 )
@@ -133,7 +137,7 @@ shape = SubResource( 3 )
 
 [node name="Wall_3" type="MeshInstance" parent="Box"]
 editor/display_folded = true
-transform = Transform( -1.62921e-007, 1, -0.000488118, 0, 0.000488118, 1, 1, 1.62921e-007, -7.95246e-011, -40.2198, 37.0752, 0.0846462 )
+transform = Transform( -3.25841e-007, 1, -0.000488238, 0, 0.000488238, 1, 2, 1.62921e-007, -7.9544e-011, -77.6313, 37.0752, 0.0846462 )
 cast_shadow = 2
 mesh = SubResource( 1 )
 material/0 = SubResource( 2 )
@@ -145,7 +149,7 @@ shape = SubResource( 3 )
 
 [node name="Wall_4" type="MeshInstance" parent="Box"]
 editor/display_folded = true
-transform = Transform( -1, 3.25841e-007, 5.30863e-014, 0, -1.62921e-007, 1, 3.25841e-007, 1, 1.62921e-007, -0.569376, 37.0752, -37.7189 )
+transform = Transform( -2, -3.89414e-007, -1.70218e-014, 0, -4.37114e-008, 1, -7.78829e-007, 1, 4.37114e-008, -0.569376, 37.0752, -78.6861 )
 cast_shadow = 2
 mesh = SubResource( 1 )
 material/0 = SubResource( 2 )
@@ -157,10 +161,10 @@ shape = SubResource( 3 )
 
 [node name="OmniLight" type="OmniLight" parent="Box"]
 editor/display_folded = true
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 42.005, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.51656, 64.1087, 0 )
 shadow_enabled = true
 shadow_bias = 0.4
-omni_range = 60.0
+omni_range = 105.105
 
 [node name="MeshInstance" type="MeshInstance" parent="Box/OmniLight"]
 cast_shadow = 0
@@ -347,4 +351,36 @@ shape = SubResource( 8 )
 [node name="MeshInstance" type="MeshInstance" parent="Cubes/GreenCube6"]
 mesh = SubResource( 9 )
 material/0 = SubResource( 12 )
+
+[node name="PickUps" type="Node" parent="."]
+editor/display_folded = true
+
+[node name="Health_Pickups" type="Node" parent="PickUps"]
+editor/display_folded = true
+
+[node name="Health_Pickup" parent="PickUps/Health_Pickups" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 59.0256, 3.2413, 55.8792 )
+kit_size = 1
+
+[node name="Ammo_Pickups" type="Node" parent="PickUps"]
+editor/display_folded = true
+
+[node name="Ammo_Pickup" parent="PickUps/Ammo_Pickups" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -70.5132, 3.03138, 59.9364 )
+
+[node name="Ammo_Pickup2" parent="PickUps/Ammo_Pickups" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -66.8098, 3.03138, -67.3933 )
+kit_size = 1
+
+[node name="Ammo_Pickup3" parent="PickUps/Ammo_Pickups" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 65.7425, 3.03138, 1.18544 )
+kit_size = 1
+
+[node name="Targets" type="Node" parent="."]
+
+[node name="Target_Whole" parent="Targets" instance=ExtResource( 5 )]
+transform = Transform( -4.37114e-008, 0, -1, 0, 1, 0, 1, 0, -4.37114e-008, -60.2485, 15.417, 0 )
+
+[node name="Target_Whole2" parent="Targets" instance=ExtResource( 5 )]
+transform = Transform( -4.37114e-008, 0, 1, 0, 1, 0, -1, 0, -4.37114e-008, 59.4597, 15.417, -31.021 )
 
