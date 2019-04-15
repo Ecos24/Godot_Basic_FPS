@@ -185,11 +185,8 @@ func process_input(delta):
 	
 	#------------------------------------------------------------------
 	#---------------- Capturing/Freeing the cursor --------------------
-	if Input.is_action_just_pressed("ui_cancel"):
-		if Input.get_mouse_mode() == Input.MOUSE_MODE_VISIBLE:
-			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-		else:
-			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	if Input.get_mouse_mode() == Input.MOUSE_MODE_VISIBLE:
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	#------------------------------------------------------------------
 	
 	#------------------------------------------------------------------
@@ -482,4 +479,7 @@ func add_grenade(additional_grenade):
 	for grenade in grenade_amounts:
 		grenade_amounts[grenade] += additional_grenade
 		grenade_amounts[grenade] = clamp(grenade_amounts[grenade], 0, MAX_GRENADE)
+
+func bullet_hit(damage, bullet_hit_pos):
+	health -= damage
 
