@@ -1,45 +1,40 @@
 extends Spatial
 
-# All of the audio files.
-var pistol_shot = preload("res://assets/Gun Sound Pack/gun_revolver_pistol_shot_04.wav")
-var gun_cock = preload("res://assets/Gun Sound Pack/gun_semi_auto_rifle_cock_02.wav")
-var rifle_shot = preload("res://assets/Gun Sound Pack/gun_rifle_sniper_shot_01.wav")
-
 var audio_node = null
+var should_loop = false
+var globals = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# Get the AudioStreamPlayer
 	audio_node = $Audio_Stream_Player
 	# Connect its finished signal to the destroy_self function.
-	audio_node.connect("finished", self, "destroy_self")
+	audio_node.connect("finished", self, "sound_finished")
 	# To make sure it is not playing any sounds, we call stop on the AudioStreamPlayer.
 	audio_node.stop()
+	
+	globals = get_node("/root/Globals")
 
-func play_sound(sound_name, position=null):
-	if pistol_shot == null or rifle_shot == null or gun_cock == null:
-		print("Audio not set!")
+func play_sound(audio_stream, position=null):
+	if audio_stream == null:
+		print("No audio stream passed. Cannot play sound")
+		globals.created_audio.remove(globals.created_audio.find(self))
 		queue_free()
 		return
 	
-	if sound_name == "Pistol_shot":
-		audio_node.stream = pistol_shot
-	elif sound_name == "Rifle_shot":
-		audio_node.stream = rifle_shot
-	elif sound_name == "Gun_cock":
-		audio_node.stream = gun_cock
-	else:
-		print("UNKNOWN STREAM")
-		queue_free()
-		return
+	audio_node.stream = audio_stream
 	
 	# Setting position for 3D audio
 	if audio_node is AudioStreamPlayer3D:
 		if position != null:
 			audio_node.global_transform.origin = position
 	
-	audio_node.play()
+	audio_node.play(0.0)
 
-func destroy_self():
-	audio_node.stop()
-	queue_free()
+func sound_finished():
+	if should_loop:
+		audio_node.play(0.0)
+	else:
+		globals.created_audio.remove(globals.created_audio.find(self))
+		audio_node.stop()
+		queue_free()

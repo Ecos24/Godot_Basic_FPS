@@ -40,7 +40,7 @@ var MOUSE_SENSITIVITY = 0.1
 # The value of the mouse scroll wheel.
 var mouse_scroll_value = 0
 # How much a single scroll action increases mouse_scroll_value
-const MOUSE_SENSITIVITY_SCROLL_WHEEL = 0.08
+var MOUSE_SENSITIVITY_SCROLL_WHEEL = 0.08
 
 # This will hold the AnimationPlayer node and its script, which we wrote previously.
 var animation_manager
@@ -93,15 +93,32 @@ var health = 100
 # The maximum amount of health a player can have.
 const MAX_HEALTH = 150
 
+# The amount of time (in seconds) it takes to respawn.
+const RESPAWN_TIME = 4
+# A variable to track how long the player has been dead.
+var dead_time = 0
+# A variable to track whether or not the player is currently dead.
+var is_dead = false
+
+# A variable to hold the Globals.gd singleton.
+var globals
+
 # A label to show how much health we have, and how much ammo we have both in
 # our gun and in reserve.
 var UI_status_label
 
-# Variable to hold the Simple Audio Player resources.
-var simple_audio_player = preload("res://Simple_Audio_Player.tscn")
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	
+	# Get the Globals.gd singleton and assigning it to globals.
+	globals = get_node("/root/Globals")
+	# Set the player’s global position by setting the origin in the player’s
+	# global Transform to the position returned by globals.get_respawn_position.
+	global_transform.origin = globals.get_respawn_position()
+	
+	# Set the Mouse sensitivity
+	MOUSE_SENSITIVITY = globals.mouse_sensitivity
+	MOUSE_SENSITIVITY_SCROLL_WHEEL = globals.mouse_scroll_sensitivity
 	
 	# Getting Elements in variable
 	camera = $Rotation_Helper/Camera
@@ -142,12 +159,16 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
-	process_input(delta)
-	process_movement(delta)
+	if !is_dead:
+		process_input(delta)
+		process_movement(delta)
+	
 	if grabbed_object == null:
 		process_changing_weapons(delta)
 		process_reloading(delta)
+	
 	process_UI(delta)
+	process_respawn(delta)
 
 #warning-ignore:unused_argument
 func process_input(delta):
@@ -421,7 +442,66 @@ func process_reloading(delta):
 			current_weapon.reload_weapon()
 		reloading_weapon = false
 
+func process_respawn(delta):
+	# If we've just died
+	if health <= 0 and !is_dead:
+		$Body_CollisionShape.disabled = true
+		$Feet_CollisionShape.disabled = true
+		
+		changing_weapon = true
+		changing_weapon_name = "UNARMED"
+		
+		$HUD/Death_Screen.visible = true
+		
+		$HUD/Panel.visible = false
+		$HUD/Crosshair.visible = false
+		
+		dead_time = RESPAWN_TIME
+		is_dead = true
+		
+		if grabbed_object != null:
+			grabbed_object.mode = RigidBody.MODE_RIGID
+			grabbed_object.apply_impulse(Vector3(0,0,0), -camera.global_transform.basis.z.normalized() * OBJECT_THROW_FORCE / 2)
+			
+			grabbed_object.collision_layer = grabbed_object_collision_layer
+			grabbed_object.collision_mask = grabbed_object_collision_mask
+			grabbed_object_collision_layer = 0
+			grabbed_object_collision_mask = 0
+			
+			grabbed_object = null
+	
+	if is_dead:
+		dead_time -= delta
+		
+		var dead_time_formatted = str(dead_time).left(3)
+		$HUD/Death_Screen/Label.text = "You died\n" + dead_time_formatted + " seconds till respawn"
+		
+		if dead_time <= 0:
+			global_transform.origin = globals.get_respawn_position()
+			
+			$Body_CollisionShape.disabled = false
+			$Feet_CollisionShape.disabled = false
+			
+			$HUD/Death_Screen.visible = false
+			
+			$HUD/Panel.visible = true
+			$HUD/Crosshair.visible = true
+			
+			for weapon in weapons:
+				var weapon_node = weapons[weapon]
+				if weapon_node != null:
+					weapon_node.reset_weapon()
+			
+			health = 100
+			grenade_amounts = {"Grenade": 2, "Sticky Grenade": 2}
+			current_grenade = "Grenade"
+			
+			is_dead = false
+
 func _input(event):
+	if is_dead:
+		return
+	
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		rotation_helper.rotate_x(deg2rad(event.relative.y * MOUSE_SENSITIVITY))
 		self.rotate_y(deg2rad(event.relative.x * MOUSE_SENSITIVITY * -1))
@@ -456,11 +536,8 @@ func fire_bullet():
 	
 	weapons[current_weapon_name].fire_weapon()
 
-func create_sound(sound_name, position=null):
-	var audio_clone = simple_audio_player.instance()
-	var scene_root = get_tree().root.get_child(0)
-	scene_root.add_child(audio_clone)
-	audio_clone.play_sound(sound_name, position)
+func create_sound(sound_name, loop, position=null):
+	globals.play_sound(sound_name, loop, position)
 
 func add_ammo(additional_ammo):
 	if current_weapon_name != "UNARMED":

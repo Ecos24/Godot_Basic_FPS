@@ -1,11 +1,12 @@
-[gd_scene load_steps=24 format=2]
+[gd_scene load_steps=25 format=2]
 
-[ext_resource path="res://Player.tscn" type="PackedScene" id=1]
-[ext_resource path="res://Scripts/RigidBody_hit_test.gd" type="Script" id=2]
-[ext_resource path="res://Health_Pickup.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Ammo_Pickup.tscn" type="PackedScene" id=4]
-[ext_resource path="res://Target.tscn" type="PackedScene" id=5]
-[ext_resource path="res://Turret.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Scripts/Respawn_Point_Setter.gd" type="Script" id=1]
+[ext_resource path="res://Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scripts/RigidBody_hit_test.gd" type="Script" id=3]
+[ext_resource path="res://Health_Pickup.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Ammo_Pickup.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Target.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Turret.tscn" type="PackedScene" id=7]
 
 [sub_resource type="PlaneMesh" id=1]
 size = Vector2( 80, 80 )
@@ -172,7 +173,17 @@ cast_shadow = 0
 mesh = SubResource( 4 )
 material/0 = SubResource( 5 )
 
-[node name="Player" parent="." instance=ExtResource( 1 )]
+[node name="Spawn_Positions" type="Spatial" parent="."]
+editor/display_folded = true
+script = ExtResource( 1 )
+
+[node name="Position" type="Position3D" parent="Spawn_Positions"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -6.125, 0, 64.3966 )
+
+[node name="Position2" type="Position3D" parent="Spawn_Positions"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -59.6083, 0, -62.7516 )
+
+[node name="Player" parent="." instance=ExtResource( 2 )]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource( 7 )
@@ -185,7 +196,7 @@ editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.95316, 23.1277 )
 mass = 5.0
 gravity_scale = 3.0
-script = ExtResource( 2 )
+script = ExtResource( 3 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Cubes/PurpleCube"]
 shape = SubResource( 8 )
@@ -199,7 +210,7 @@ editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.23405, 9.95316, 23.1277 )
 mass = 5.0
 gravity_scale = 3.0
-script = ExtResource( 2 )
+script = ExtResource( 3 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Cubes/PurpleCube2"]
 shape = SubResource( 8 )
@@ -213,7 +224,7 @@ editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.85143, 9.95316, 23.1277 )
 mass = 5.0
 gravity_scale = 3.0
-script = ExtResource( 2 )
+script = ExtResource( 3 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Cubes/PurpleCube3"]
 shape = SubResource( 8 )
@@ -227,7 +238,7 @@ editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.85143, 17.1576, 23.1277 )
 mass = 5.0
 gravity_scale = 3.0
-script = ExtResource( 2 )
+script = ExtResource( 3 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Cubes/PurpleCube4"]
 shape = SubResource( 8 )
@@ -241,7 +252,7 @@ editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.85143, 24.1593, 23.1277 )
 mass = 5.0
 gravity_scale = 3.0
-script = ExtResource( 2 )
+script = ExtResource( 3 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Cubes/PurpleCube5"]
 shape = SubResource( 8 )
@@ -255,7 +266,7 @@ editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.451504, 17.9137, 23.1277 )
 mass = 5.0
 gravity_scale = 3.0
-script = ExtResource( 2 )
+script = ExtResource( 3 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Cubes/PurpleCube6"]
 shape = SubResource( 8 )
@@ -270,7 +281,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.95316, -21.6551 )
 mass = 5.0
 physics_material_override = SubResource( 11 )
 gravity_scale = 3.0
-script = ExtResource( 2 )
+script = ExtResource( 3 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Cubes/GreenCube"]
 shape = SubResource( 8 )
@@ -284,7 +295,7 @@ editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.79916, 9.95316, -21.6551 )
 mass = 5.0
 physics_material_override = SubResource( 13 )
-script = ExtResource( 2 )
+script = ExtResource( 3 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Cubes/GreenCube2"]
 shape = SubResource( 8 )
@@ -299,7 +310,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.58552, 9.95316, -21.6551 )
 mass = 5.0
 physics_material_override = SubResource( 14 )
 gravity_scale = 3.0
-script = ExtResource( 2 )
+script = ExtResource( 3 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Cubes/GreenCube3"]
 shape = SubResource( 8 )
@@ -314,7 +325,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.79556, 17.3734, -21.6551 )
 mass = 5.0
 physics_material_override = SubResource( 15 )
 gravity_scale = 3.0
-script = ExtResource( 2 )
+script = ExtResource( 3 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Cubes/GreenCube4"]
 shape = SubResource( 8 )
@@ -329,7 +340,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.51582, 17.3734, -21.6551 )
 mass = 5.0
 physics_material_override = SubResource( 16 )
 gravity_scale = 3.0
-script = ExtResource( 2 )
+script = ExtResource( 3 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Cubes/GreenCube5"]
 shape = SubResource( 8 )
@@ -344,7 +355,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.602769, 24.9266, -21.6551 )
 mass = 3.0
 physics_material_override = SubResource( 17 )
 gravity_scale = 3.0
-script = ExtResource( 2 )
+script = ExtResource( 3 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Cubes/GreenCube6"]
 shape = SubResource( 8 )
@@ -359,44 +370,44 @@ editor/display_folded = true
 [node name="Health_Pickups" type="Node" parent="PickUps"]
 editor/display_folded = true
 
-[node name="Health_Pickup" parent="PickUps/Health_Pickups" instance=ExtResource( 3 )]
+[node name="Health_Pickup" parent="PickUps/Health_Pickups" instance=ExtResource( 4 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 59.0256, 3.2413, 55.8792 )
 kit_size = 1
 
 [node name="Ammo_Pickups" type="Node" parent="PickUps"]
 editor/display_folded = true
 
-[node name="Ammo_Pickup" parent="PickUps/Ammo_Pickups" instance=ExtResource( 4 )]
+[node name="Ammo_Pickup" parent="PickUps/Ammo_Pickups" instance=ExtResource( 5 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -70.5132, 3.03138, 59.9364 )
 
-[node name="Ammo_Pickup2" parent="PickUps/Ammo_Pickups" instance=ExtResource( 4 )]
+[node name="Ammo_Pickup2" parent="PickUps/Ammo_Pickups" instance=ExtResource( 5 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -66.8098, 3.03138, -67.3933 )
 kit_size = 1
 
-[node name="Ammo_Pickup3" parent="PickUps/Ammo_Pickups" instance=ExtResource( 4 )]
+[node name="Ammo_Pickup3" parent="PickUps/Ammo_Pickups" instance=ExtResource( 5 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 65.7425, 3.03138, 1.18544 )
 kit_size = 1
 
 [node name="Targets" type="Node" parent="."]
 editor/display_folded = true
 
-[node name="Target_Whole" parent="Targets" instance=ExtResource( 5 )]
+[node name="Target_Whole" parent="Targets" instance=ExtResource( 6 )]
 transform = Transform( -4.37114e-008, 0, -1, 0, 1, 0, 1, 0, -4.37114e-008, -60.2485, 15.417, 0 )
 
-[node name="Target_Whole2" parent="Targets" instance=ExtResource( 5 )]
+[node name="Target_Whole2" parent="Targets" instance=ExtResource( 6 )]
 transform = Transform( -4.37114e-008, 0, 1, 0, 1, 0, -1, 0, -4.37114e-008, 59.4597, 15.417, -31.021 )
 
 [node name="Turrents" type="Node" parent="."]
 editor/display_folded = true
 
-[node name="Turret" parent="Turrents" instance=ExtResource( 6 )]
+[node name="Turret" parent="Turrents" instance=ExtResource( 7 )]
 transform = Transform( 0.310629, 0, 0.950531, 0, 1, 0, -0.950531, 0, 0.310629, 63.6346, 0, 31.4309 )
 use_raycast = true
 
-[node name="Turret2" parent="Turrents" instance=ExtResource( 6 )]
+[node name="Turret2" parent="Turrents" instance=ExtResource( 7 )]
 transform = Transform( 0.0790288, 0, -0.996872, 0, 1, 0, 0.996872, 0, 0.0790288, -67.1683, 0, 31.4309 )
 
-[node name="Turret3" parent="Turrents" instance=ExtResource( 6 )]
+[node name="Turret3" parent="Turrents" instance=ExtResource( 7 )]
 transform = Transform( -0.999237, 0, 0.0390559, 0, 1, 0, -0.0390559, 0, -0.999237, 24.8051, 0, -64.1652 )
 use_raycast = true
 

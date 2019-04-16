@@ -47,7 +47,7 @@ func fire_weapon():
 	ammo_in_weapon -= 1
 	
 	# Play Firing sound.
-	player_node.create_sound("Rifle_shot", ray.global_transform.origin)
+	player_node.create_sound("Rifle_shot", false, ray.global_transform.origin)
 
 func reload_weapon():
 	var can_reload = false
@@ -71,7 +71,7 @@ func reload_weapon():
 		player_node.animation_manager.set_animation(RELOADING_ANIM_NAME)
 		
 		# Play reloading sound.
-		player_node.create_sound("Gun_cock", player_node.camera.global_transform.origin)
+		player_node.create_sound("Gun_cock", false, player_node.camera.global_transform.origin)
 		
 		return true
 	
@@ -97,3 +97,7 @@ func unequip_weapon():
 		return true
 	
 	return false
+
+func reset_weapon():
+	ammo_in_weapon = AMMO_IN_MAG
+	spare_ammo =  100

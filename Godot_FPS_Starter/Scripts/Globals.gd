@@ -8,6 +8,8 @@ extends Node
 
 # The current sensitivity for our mouse, so we can load it in Player.gd.
 var mouse_sensitivity = 0.1
+
+var mouse_scroll_sensitivity = 0.09
 # The current sensitivity for our joypad, so we can load it in Player.gd.
 var joypad_sensitivity = 2
 
@@ -32,8 +34,27 @@ const POPUP_SCENE = preload("res://Pause_Popup.tscn")
 var popup = null
 # ------------------------------------------
 
+# ------------------------------------------
+# ----------- All the audio files ----------
+# A dictionary holding all the audio clips Globals.gd can play.
+var audio_clips = {
+	"Pistol_shot": null,
+	"Rifle_shot": null,
+	"Gun_cock": null
+}
+# The simple audio player scene.
+const SIMPLE_AUDIO_PLAYER_SCENE = preload("res://Simple_Audio_Player.tscn")
+# A list to hold all the simple audio players Globals.gd has created.
+var created_audio = []
+# ------------------------------------------
+
+# A variable to hold all the respawn points in a level
+var respawn_points = null
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	
+	randomize()
 	
 	# Because Globals.gd is an autoload/singleton,
 	# Godot will make a Node when the game is launched,
@@ -71,6 +92,16 @@ func _process(delta):
 			get_tree().paused = true
 
 func load_new_scene(new_scene_path):
+	
+	# Removing respawn points of current scene.
+	respawn_points = null
+	
+	# destroying all audio related to current scene.
+	for sound in created_audio:
+		if sound != null:
+			sound.queue_free()
+	created_audio.clear()
+	
 	get_tree().change_scene(new_scene_path)
 
 func set_debug_display(display_on):
@@ -100,3 +131,24 @@ func popup_quit():
 		popup = null
 	
 	load_new_scene(MAIN_MENU_PATH)
+
+func get_respawn_position():
+	if respawn_points == null:
+		return Vector3(0, 0, 0)
+	else:
+		var respawn_point = rand_range(0, respawn_points.size() - 1)
+		return respawn_points[respawn_point].global_transform.origin
+
+func play_sound(sound_name, loop_sound = false, sound_position = null):
+	if audio_clips.has(sound_name):
+		var new_audio = SIMPLE_AUDIO_PLAYER_SCENE.instance()
+		new_audio.should_loop = loop_sound
+		
+		add_child(new_audio)
+		created_audio.append(new_audio)
+		
+		new_audio.play_sound(audio_clips[sound_name], sound_position)
+	
+	else:
+		print("ERROR: cannot play sound that does not exist in the audio_clips!")
+
